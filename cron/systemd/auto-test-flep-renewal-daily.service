@@ -1,0 +1,16 @@
+[Unit]
+Description=Automation Test For FLEP Renewals
+#OnFailure=unit-status-mail@%n.service
+
+[Service]
+# oneshot services can have multiple ExecStart lines
+Type=oneshot
+User=autoarmour
+PIDFile=/var/run/autoarmour/auto-test-flep-renewal-daily.pid
+WorkingDirectory=/opt/autoarmour/assurance
+ExecStartPre=/bin/mkdir -p /var/run/autoarmour
+ExecStartPre=/bin/chown autoarmour:autoarmour /var/run/autoarmour
+ExecStart=/opt/autoarmour/assurance/cron/scripts/automation_flep_renewal.sh
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=auto-test-flep-renewal-daily

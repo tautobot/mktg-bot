@@ -1,0 +1,20 @@
+[Unit]
+Description=Automation Test
+#OnFailure=unit-status-mail@%n.service
+
+[Service]
+# oneshot services can have multiple ExecStart lines
+Type=oneshot
+#User=autoarmour
+User=ducle
+PIDFile=/var/run/autoarmour/automation-test-daily.pid
+#WorkingDirectory=/opt/autoarmour/assurance
+WorkingDirectory=/home/ducle/Working/PycharmProjects/Gigacover/assurance
+ExecStartPre=/bin/mkdir -p /var/run/autoarmour
+#ExecStartPre=/bin/chown autoarmour:autoarmour /var/run/autoarmour
+#ExecStartPre=/bin/chown ducle:ducle /var/run/autoarmour
+#ExecStart=/opt/autoarmour/assurance/cron/scripts/automation_sample_job.sh
+ExecStart=/home/ducle/Working/PycharmProjects/Gigacover/assurance/cron/scripts/automation_sample_job.sh
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=automation-test-daily

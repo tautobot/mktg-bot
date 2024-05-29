@@ -1,0 +1,17 @@
+[Unit]
+Description=Automation Test For Essentials / Flip / Flep
+#OnFailure=unit-status-mail@%n.service
+
+[Service]
+# oneshot services can have multiple ExecStart lines
+Type=oneshot
+User=jarvis
+UMask=0002
+#PIDFile=/var/run/jarvis/auto-test-ess-flip-flep-daily.pid
+WorkingDirectory=/opt/gigacover/assurance
+#ExecStartPre=/bin/mkdir -p /var/run/jarvis
+#ExecStartPre=/bin/chown jarvis:jarvis /var/run/jarvis
+ExecStart=/opt/gigacover/assurance/cron/scripts/automation_aqa_daily.sh
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=auto-test-ess-flip-flep-daily

@@ -1,0 +1,13 @@
+version: "2.2"
+
+services:
+  # Selenium hub
+  chrome:
+    image: seleniarm/standalone-chromium:4.0.0-beta-1-20210215
+    container_name: mktg-chrome
+    volumes:
+      - /dev/shm:/dev/shm
+    ports:
+      - 4444:4444
+      - 5900:5900
+    restart: always

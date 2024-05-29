@@ -1,0 +1,22 @@
+# docstring
+# TARGET=http://34.87.96.34:21063  DURATION=100     ARRIVAL_COUNT=1000  artillery run aQA-home.yaml   | tee ../log_vault/aQA-home.d100ac1000.`date +%Y%m%d_%H%M%S`.log
+#        #aQA home url           #in 100 seconds  #run 1000 users                   #loadtest script    #log saved to file
+
+config:
+  target: "{{ $processEnvironment.TARGET }}"
+
+  phases:
+  - duration     : "{{ $processEnvironment.DURATION }}"
+    arrivalCount : "{{ $processEnvironment.ARRIVAL_COUNT }}"
+
+  defaults:
+    header:
+      Content-Type: "application/json"
+
+
+scenarios:
+- name: "Test :atlas load via flep-purchase endpoint /loadtests/lt200218"
+
+  flow:
+  - get:
+      url: "/"
