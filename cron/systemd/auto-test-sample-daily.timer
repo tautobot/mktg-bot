@@ -1,9 +1,0 @@
-[Unit]
-Description=Timer for automation test jobs
-
-[Timer]
-# runs every day at 0330 (servers should be in SGT)
-OnCalendar=*-*-* 03:30:00
-
-[Install]
-WantedBy=timers.target

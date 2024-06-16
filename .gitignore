@@ -1,8 +1,15 @@
 .idea/
 .venv/
 Library/*
-config_local.py
+config.py
+config.json
+.env
 testcases/sponsored_purchase/testfiles/
 *.pyc
 /report/
+/resources/
 /aQA/fixtures/
+*pocket.app
+*pouch.app
+*pocket.apk
+*pouch.apk

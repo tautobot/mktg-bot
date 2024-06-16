@@ -5,8 +5,8 @@ from pathlib import Path
 import pytest
 from py.xml import html
 
-from aqa.utils.generic import root_path
-from config_local import environment, WORKING_DIR_REPORT
+
+from config import environment, CODE_HOME
 
 
 # add Description header column in Report
@@ -43,8 +43,8 @@ def pytest_runtest_makereport(item, call):
 
     if report.when == "call":
         # feature_request = item.funcargs['request']
-        # driver = feature_request.getfixturevalue('real_ios_webdriver')
-        driver = item.instance.driver
+        # driver = feature_request.getfixturevalue('ios_webdriver')
+        # driver = item.instance.driver
         xfail = hasattr(report, "wasxfail")
 
         # always extras the url
@@ -52,12 +52,13 @@ def pytest_runtest_makereport(item, call):
 
         if (report.skipped and xfail) or (report.failed and not xfail):
             # only add additional on failure
-            screenshot = driver.get_screenshot_as_base64()
+            # screenshot = driver.get_screenshot_as_base64()
+            screenshot = None
             extra.append(pytest_html.extras.html(f'<img src="data:image/png;base64,{screenshot}" style="max-width:50%"; align="right">'))
         report.extra = extra
 
         #clean session after all
-        driver.quit()
+        # driver.quit()
 
 
 # Change title of report
@@ -72,7 +73,7 @@ def pytest_configure(config):
     if not config.option.htmlpath:
         now = datetime.now()
         # create report target dir
-        report_path = f'{root_path}/report' if environment == 'local' else WORKING_DIR_REPORT
+        report_path = f'{CODE_HOME}/report' if environment == 'local' else WORKING_DIR_REPORT
         reports_dir = Path(report_path, now.strftime('%Y%m%d'))
         reports_dir.mkdir(parents=True, exist_ok=True)
 

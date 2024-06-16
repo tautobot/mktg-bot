@@ -30,6 +30,9 @@ pytest-rerunfailures = "*"
 pytest-html = "==3.2.0"
 pyotp = "*"
 libimobiledevice = "*"
+gtts = "*"
+gradio-client = "*"
+openai = "*"
 
 [requires]
 python_version = "3.9"

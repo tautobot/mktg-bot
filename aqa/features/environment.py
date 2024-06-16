@@ -1,7 +1,7 @@
 # features/environment.py
 
 from aqa.webdriver.selenium_webdriver import webdriver_local, webdriver_docker
-from config_local import CHROME_DRI_ENV
+from config import CHROME_DRI_ENV
 
 
 def before_all(context):

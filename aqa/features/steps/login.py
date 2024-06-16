@@ -23,6 +23,6 @@ def step_impl(context):
     login_btn = wait_xpath(context.driver, '//*[(text()="LOG IN")]')
     login_btn.click()
 
-@then('wait')
+@then('wait10s')
 def step_impl(context):
     sleep(20)

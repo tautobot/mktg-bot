@@ -17,13 +17,13 @@ pyenv virtualenv 3.9.11 .venv
 ```
 pyenv shell 3.9.11
 python -m venv .venv
-
-pipenv activate
-pipenv deactivate
 ```
 4. Install pipenv
 ```
 pip install pipenv
+pipenv activate
+pipenv deactivate
+
 ```
 5. Git repo
 ```
@@ -79,7 +79,7 @@ pipenv install
 4. install Android Studio and Emulator (for Android)
     ref. https://www.alphr.com/run-android-emulator/
     Install driver: `xcodebuild -version && sw_vers && rm -rf ~/.appium && npm install -g appium@next && appium driver install uiautomator2 && appium --allow-cors`
-    start `emulator -avd <device-name>`, e.g `emulator -avd emulator-5554`
+    start `emulator -avd <device-name>`, e.g `emulator -avd emulator-5554 --allow-cors`
     stop `adb -s emulator-5554 emu kill` or `adb devices | grep emulator | cut -f1 | while read line; do adb -s $line emu kill; done`
 
 5. install iOS simuator (only for MAC OS)
@@ -95,9 +95,9 @@ pipenv install
     This allows Appium to complete certain operations since the Apple apps do not easily enable programmatic use.
     `pipenv install libimobiledevice`
     This package will allow you to transfer iOS apps onto your device
-    `pipenv install ios-deploy`
+    `pipenv install ios-deploy`  # pipenv uninstall ios-deploy, then brew install ios-deploy if RuntimeError: Failed to lock Pipfile.lock!
     Appium will automatically build the WDA app. Since WDA requires a dependency manager for iOS called Carthage, we will need to install this to enable the WDA bootstrap process.
-    `pipenv install carthage`
+    `pipenv install carthage`    # pipenv uninstall ios-deploy, then brew install carthage if RuntimeError: Failed to lock Pipfile.lock!
     ref. https://medium.com/@abhaykhs/using-appium-to-run-ios-tests-on-real-devices-fabd9850a06a
 ```
 

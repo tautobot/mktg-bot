@@ -1,9 +1,0 @@
-[Unit]
-Description=Timer for Automation Test FLEP Renewals
-
-[Timer]
-# runs every day at 07:00AM SGT
-OnCalendar=*-*-* 07:00:00
-
-[Install]
-WantedBy=timers.target

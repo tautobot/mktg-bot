@@ -1,9 +1,0 @@
-[Unit]
-Description=Timer for Automation Test Sponsored Purchase / Flip Renewal / Flep Renewal
-
-[Timer]
-# runs every day at 08:00AM SGT
-OnCalendar=*-*-* 08:00:00
-
-[Install]
-WantedBy=timers.target
