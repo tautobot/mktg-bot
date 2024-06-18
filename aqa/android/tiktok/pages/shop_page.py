@@ -6,6 +6,7 @@ from aqa.utils.webdriver_util import (
     click_on_element_location,
     send_text_into_element,
     check_element_displayed,
+    get_element_text,
     wait_seconds,
     swipe_to_right_screen,
     swipe_to_left_screen,
@@ -57,7 +58,9 @@ class AndroidTikTokShopPage:
         self.flash_sale_3                  = AppiumBy.XPATH, '//com.lynx.tasm.behavior.ui.view.UIView[contains(@content-desc,"₫")][3]'
         self.flash_sale_4                  = AppiumBy.XPATH, '//com.lynx.tasm.behavior.ui.view.UIView[contains(@content-desc,"₫")][4]'
         self.flash_sale_product            = '//com.lynx.tasm.behavior.ui.list.UIList/following-sibling::com.ss.android.ugc.aweme.ecommerce.ui.EcomFlattenUIImage[{0}]'
-        self.view_more                     = AppiumBy.XPATH, '//com.lynx.tasm.behavior.ui.list.UIList/following-sibling::com.ss.android.ugc.aweme.ecommerce.ui.EcomFlattenUIImage[{0}]/preceding-sibling::com.lynx.tasm.behavior.ui.LynxFlattenUI[@content-desc="View more"]'
+        self.plist_contain_view_more       = AppiumBy.XPATH, '//com.lynx.tasm.behavior.ui.list.UIList/following-sibling::com.ss.android.ugc.aweme.ecommerce.ui.EcomFlattenUIImage[4]/preceding-sibling::com.lynx.tasm.behavior.ui.LynxFlattenUI[@content-desc="View more"]'
+        self.first_product_title           = AppiumBy.XPATH, '//com.bytedance.ies.xelement.viewpager.childitem.LynxViewpagerItem/(following-sibling::com.lynx.tasm.behavior.ui.LynxFlattenUI/following-sibling::com.lynx.tasm.behavior.ui.LynxFlattenUI[1]/following-sibling::com.lynx.tasm.behavior.ui.LynxFlattenUI[1]/following-sibling::com.ss.android.ugc.aweme.ecommerce.ui.EcomFlattenUIImage[1]/following-sibling::com.lynx.tasm.behavior.ui.text.FlattenUIText[1])[1]'
+        self.dynamic_product_title         = AppiumBy.XPATH, '//com.bytedance.ies.xelement.viewpager.childitem.LynxViewpagerItem/(following-sibling::com.lynx.tasm.behavior.ui.LynxFlattenUI/following-sibling::com.lynx.tasm.behavior.ui.LynxFlattenUI[1]/following-sibling::com.lynx.tasm.behavior.ui.view.UIComponent[1]/following-sibling::com.lynx.tasm.behavior.ui.LynxFlattenUI[1]/following-sibling::com.ss.android.ugc.aweme.ecommerce.ui.EcomFlattenUIImage[1]/following-sibling::com.lynx.tasm.behavior.ui.text.FlattenUIText[1])[{}]'
 
         self.horizontal_menu_all           = AppiumBy.XPATH, '//com.lynx.tasm.behavior.ui.view.UIView[@content-desc="All"]'
         self.horizontal_menu_beauty        = AppiumBy.XPATH, '//com.lynx.tasm.behavior.ui.view.UIView[@content-desc="Beauty"]'
@@ -82,32 +85,42 @@ class AndroidTikTokShopPage:
         self.horizontal_menu_pets_and_toys = AppiumBy.XPATH, '//com.lynx.tasm.behavior.ui.view.UIView[@content-desc="Pets & Toys"]'
 
     def go_through_products_from_flash_sale(self, num):
-        # if check_element_displayed(self.driver, self.for_you_top):
-        #     tap_on_location(self.driver, [(700, 1200)])
-        click_on_element_location(self.driver, self.shop_btn)
+        products = []
         wait_seconds(3)
-        tap_on_location(self.driver, [(540, 50)])  # Skip ads popup
-        # Click on flash sale
-        # click_on_element_location(self.driver, self.flash_sale_all)
-        # Improve by tapping on location
-        tap_on_location(self.driver, [(540, 780)])  # Top center of flash sale section
-        count = 0
-        wait_seconds(3)
-        product1 = AppiumBy.XPATH, self.flash_sale_product.format(1)
-        product2 = AppiumBy.XPATH, self.flash_sale_product.format(4)
-        for i in range(1, 3*num, 3):
-            count += 1
-            if count == 1:
-                click_on_element(self.driver, product1)
+        for i in range(0, num):
+            # click_on_element_location(self.driver, self.shop_btn)
+            tap_on_location(self.driver, [(320, 2200)])  # Shop button location
+            wait_seconds(3)
+            tap_on_location(self.driver, [(540, 50)])  # Skip ads popup
+            # Click on flash sale
+            # click_on_element_location(self.driver, self.flash_sale_all)`
+            # Improve by tapping on location
+            tap_on_location(self.driver, [(540, 780)])  # Top center of flash sale section
+            wait_seconds(3)
+
+            if i == 0:
+                product1 = self.first_product_title
+                product2 = self.dynamic_product_title[0], self.dynamic_product_title[1].format(1)
             else:
-                click_on_element(self.driver, product2)
+                product1 = self.dynamic_product_title[0], self.dynamic_product_title[1].format(1)
+                product2 = self.dynamic_product_title[0], self.dynamic_product_title[1].format(2)
+            p_title = get_element_text(self.driver, product1)
+
+            while p_title in products:
+                scroll_from_el1_to_el2(self.driver, product2, product1, 1100)
+                wait_seconds(2)
+                product1 = self.dynamic_product_title[0], self.dynamic_product_title[1].format(1)
+                product2 = self.dynamic_product_title[0], self.dynamic_product_title[1].format(2)
+                p_title = get_element_text(self.driver, product1)
+
+            products.append(p_title)  # Store product title in created videos to skip next time
+            click_on_element(self.driver, product1)
             wait_seconds(2)
             # TODO: Create a page to add the product into owner shop
-            self.product_page.collect_all_data_n_create_shoppable_video()
+            # self.product_page.collect_all_data_n_create_shoppable_video()
             # Finish creating a shoppable video, get back to products list
-            press_android_keycode(self.driver, AndroidKey.BACK)
-            # Each time scroll up a product, 2nd product will become 1st one
-            scroll_from_el1_to_el2(self.driver, product2, product1, 1100)
+            press_android_keycode(self.driver, AndroidKey.BACK, 2)
+        print(products)
 
     def demo(self):
         pass

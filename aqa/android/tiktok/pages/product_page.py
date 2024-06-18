@@ -8,6 +8,7 @@ from aqa.utils.zapier import ai_response, run_ai_shorten_desc
 from aqa.utils.webdriver_util import (
     wait_element,
     wait_elements,
+    wait_element_clickable,
     click_on_element,
     click_on_element_location,
     get_element_text,
@@ -35,6 +36,7 @@ class ProductInfo:
         self._p_rate = None
         self._p_count_rate = None
         self._p_count_sold = None
+        self._secure_payments = None
         self._auth100 = None
         self._free_return = None
         self._free_shipping = None
@@ -69,7 +71,8 @@ class AndroidTikTokProductPage:
         self.product_count_sold_lbl            = AppiumBy.XPATH, '//android.widget.TextView[@text="Flash Sale offered by TikTok Shop"]/../following-sibling::android.view.ViewGroup[2]//android.widget.ImageView/following-sibling::android.view.ViewGroup/android.widget.TextView'
 
         self.auth100_lbl                     = AppiumBy.XPATH, '//android.widget.TextView[@text="100% Authentic"]'
-        self.free_return15days_lbl           = AppiumBy.XPATH, '//android.widget.TextView[@text="Free 15-day Returns"]'
+        self.secure_payments_lbl             = AppiumBy.XPATH, '//android.widget.TextView[@text="Secure payments"]'
+        self.free_return15days_lbl           = AppiumBy.XPATH, '//android.widget.TextView[contains(@text,"day Returns")]'
         self.free_shipping_lbl               = AppiumBy.XPATH, '//android.widget.TextView[@text="Free Shipping"]'
         self.deal_on_order_over_lbl          = AppiumBy.XPATH, '//android.widget.TextView[contains(@text,"on orders over")]'
         self.deal_off_shipping_on_orders_lbl = AppiumBy.XPATH, '//android.widget.TextView[contains(@text,"off shipping on orders")]'
@@ -87,7 +90,7 @@ class AndroidTikTokProductPage:
         self.promo_info_expand          = AppiumBy.XPATH, '//android.widget.TextView[contains(@text,"on each product sold")]/../preceding-sibling::android.widget.FrameLayout/android.widget.ImageView'
         self.promo_info_lbl             = AppiumBy.XPATH, '//com.lynx.tasm.behavior.ui.LynxFlattenUI[@content-desc="Promotion info"]'
         self.promo_info_collapse        = AppiumBy.XPATH, '//com.lynx.tasm.behavior.ui.LynxFlattenUI[@content-desc="Promotion info"]/../../preceding-sibling::android.widget.FrameLayout'
-        self.promo_details              = AppiumBy.XPATH, '//com.lynx.tasm.behavior.ui.LynxFlattenUI[contains(@content-desc, "per sale") and contains(@content-desc, "commission rate") and contains(@content-desc, "In stock")]'
+        self.promo_details              = AppiumBy.XPATH, '//com.lynx.tasm.behavior.ui.LynxFlattenUI[contains(@content-desc, "per sale") and contains(@content-desc, "commission rate") and contains(@content-desc, "stock")]'
         self.earn_per_sale_lbl          = AppiumBy.XPATH, '//com.lynx.tasm.behavior.ui.LynxFlattenUI[@content-desc="Promotion info"]/following-sibling::com.lynx.tasm.behavior.ui.text.FlattenUIText[contains(@content-desc, "Earn") and contains(@content-desc, "per sale")]'
         self.commission_rate_lbl        = AppiumBy.XPATH, '//com.lynx.tasm.behavior.ui.text.FlattenUIText[contains(@content-desc,"% commission rate")]'
         self.in_stock_lbl               = AppiumBy.XPATH, '//com.lynx.tasm.behavior.ui.text.FlattenUIText[@content-desc="In stock"]/preceding-sibling::com.lynx.tasm.behavior.ui.text.FlattenUIText[3]'
@@ -145,10 +148,10 @@ class AndroidTikTokProductPage:
         self.post_on_tiktok_btn                             = AppiumBy.XPATH, '//android.widget.TextView[@text="Post on TikTok"]'
         self.post_on_tiktok_popup                           = AppiumBy.XPATH, '//android.widget.TextView[@text="The product link will be automatically added to the video after you edit the product name."]'
         self.edit_feature_enhanced_ok_popup                 = AppiumBy.XPATH, '//android.widget.TextView[@text="Edit feature enhanced"]/following-sibling::android.widget.Button[@text="OK"]'
-        self.post_on_tiktok_next_btn                        = AppiumBy.XPATH, '//android.widget.Button[@text="Next"]'
+        self.post_on_tiktok_next_btn                        = AppiumBy.XPATH, '//android.widget.TextView[@text="Next"]'
 
         self.add_a_product_lbl                              = AppiumBy.XPATH, '//com.lynx.tasm.behavior.ui.text.FlattenUIText[@content-desc="Add a product"]'
-        self.product_name_txt                               = AppiumBy.XPATH, 'com.bytedance.ies.xelement.input.LynxInputView'
+        self.product_name_txt                               = AppiumBy.XPATH, '//com.lynx.tasm.behavior.ui.text.FlattenUIText[@content-desc="Add"]/preceding-sibling::com.bytedance.ies.xelement.input.LynxInputView'
         self.add_btn                                        = AppiumBy.XPATH, '//com.lynx.tasm.behavior.ui.text.FlattenUIText[@content-desc="Add"]'
 
         self.add_sound_btn  = AppiumBy.XPATH, '//android.widget.TextView[@text="Add sound"]'
@@ -188,6 +191,8 @@ class AndroidTikTokProductPage:
         self.place_hochiminh_lbl       = AppiumBy.XPATH, '//android.widget.TextView[@text="Ho Chi Minh City"]'
         # Who can view
         self.everyone_can_see_icon     = AppiumBy.XPATH, '//android.widget.Button[@content-desc="Everyone can view this post"]'
+        self.friends_can_see_icon      = AppiumBy.XPATH, '//android.widget.Button[@content-desc="Friends can view this post"]'
+        self.only_you_can_see_icon     = AppiumBy.XPATH, '//android.widget.Button[@content-desc="Only you can view this post"]'
         self.everyone_see_video_rd     = AppiumBy.XPATH, '//android.view.ViewGroup[@content-desc="Everyone"]'
         self.friends_see_video_rd      = AppiumBy.XPATH, '//android.widget.TextView[@text="Friends"]'
         self.only_you_see_video_rd     = AppiumBy.XPATH, '//android.widget.TextView[@text="Only you"]'
@@ -196,13 +201,12 @@ class AndroidTikTokProductPage:
         # Share to FB,...
         self.share_to_icon             = AppiumBy.XPATH, '//android.widget.TextView[@text="Share to"]'
         # Accept policy and term
-        self.accept_chb                = AppiumBy.XPATH, '//android.widget.TextView[@text="I accept the Music Usage Confirmation"]'
+        self.accept_chb                = AppiumBy.XPATH, '//android.widget.TextView[@text="I accept the Music Usage Confirmation"]/preceding-sibling::android.widget.CheckBox'
         self.drafts_btn                = AppiumBy.XPATH, '//android.widget.Button[@content-desc="Save to drafts"]'
         self.post_btn                  = AppiumBy.XPATH, '//android.widget.Button[@content-desc="Post"]'
-        self.view_your_friend_post_pop = AppiumBy.XPATH, '//android.widget.TextView[@text="View your friends’ posts"]'
-        self.ok_btn                    = AppiumBy.XPATH, 'android.widget.Button'
-        self.last_pop                  = AppiumBy.XPATH, '//android.widget.TextView[contains(@text,"Give TikTok access to your Facebook friends list and email?"]'
-        self.last_ok_btn               = AppiumBy.XPATH, '//android.widget.Button[@text="OK"]'
+        self.give_tiktok_access_pop    = AppiumBy.XPATH, '//android.widget.TextView[contains(@text,"Give TikTok access to your Facebook friends list and email?"]'
+        self.link_email_pop            = AppiumBy.XPATH, '//android.widget.TextView[@text="Link email"]'
+
 
     @staticmethod
     def get_promo_details(text):
@@ -222,6 +226,7 @@ class AndroidTikTokProductPage:
 
     @staticmethod
     def shorten_product_title(product_title, max_length=100):
+        product_title = product_title.strip()
         # Remove words after the last period "."
         if '.' in product_title:
             product_title = product_title.rsplit('.', 1)[0]
@@ -231,14 +236,13 @@ class AndroidTikTokProductPage:
             product_title = product_title.rsplit(',', 1)[0]
 
         # Remove words to ensure the length is less than or equal to max_length characters
-        elif len(product_title) >= max_length:
+        elif len(product_title) >= max_length-5:
             # Remove words to ensure the length is less than or equal to max_length characters
             while len(product_title) > max_length:
                 words = product_title.split()
                 if words:
                     product_title = ' '.join(words[:-1])  # Remove the last word
-
-            product_title = product_title.strip()
+            product_title += '...'  # Add ... at the end
 
         return product_title.strip()
 
@@ -280,6 +284,11 @@ class AndroidTikTokProductPage:
             self.product_count_sold_lbl) if check_element_displayed(
             self.driver,
             self.product_count_rate_btn) else None
+        p._secure_payments = get_element_text(
+            self.driver,
+            self.secure_payments_lbl) if check_element_displayed(
+            self.driver,
+            self.secure_payments_lbl) else None
         p._auth100 = get_element_text(
             self.driver,
             self.auth100_lbl) if check_element_displayed(
@@ -421,13 +430,21 @@ class AndroidTikTokProductPage:
         click_on_element(self.driver, self.generate_video_btn)
         wait_seconds(5)
         while not check_element_displayed(self.driver, self.post_on_tiktok_btn):
-            wait_seconds(3)
+            wait_seconds(1)
         tap_on_location(self.driver, [(550, 1200)])  # Tap on center of screen, using for stop video clip
         click_on_element(self.driver, self.post_on_tiktok_btn)
         wait_seconds(2)
-        # TODO: Edit product name before adding (30 chars)
-        send_text_into_element(self.driver, self.product_name_txt, "Product name")
-        click_on_element_location(self.driver, self.add_btn)
+        while not check_element_displayed(self.driver, self.add_a_product_lbl):
+            wait_seconds(1)
+        while not wait_element_clickable(self.driver, self.add_btn):
+            wait_seconds(1)
+        # wait_seconds(5)
+        # # TODO: Edit product name before adding (30 chars). Generate together with shorten desc from ai
+        # product_name = ai_response.split('||')[1] if ai_response else "Giấy lụa 4 lớp 20 gói"
+        # if product_name:
+        #     send_text_into_element(self.driver, self.product_name_txt, product_name)
+        wait_seconds(2)
+        click_on_element(self.driver, self.add_btn)
 
         # Add sound
         if check_element_displayed(self.driver, self.post_on_tiktok_popup):
@@ -435,13 +452,12 @@ class AndroidTikTokProductPage:
             tap_on_location(self.driver, [(550, 600)])
         if check_element_displayed(self.driver, self.edit_feature_enhanced_ok_popup):
             click_on_element(self.driver, self.edit_feature_enhanced_ok_popup)
+        while not check_element_displayed(self.driver, self.post_on_tiktok_next_btn):
+            wait_seconds(1)
         click_on_element(self.driver, self.post_on_tiktok_next_btn)
 
-        # while not check_element_displayed(self.driver, self.add_a_product_lbl):
-        #     wait_seconds(1)
-
         # Type # to include hashtags in Product Description
-        send_text_into_element(self.driver, self.add_desc_txt, "Product Description...")
+        send_text_into_element(self.driver, self.add_desc_txt, "Giấy ăn rút lụa 4 lớp thùng 20 gói")
         if check_element_displayed(self.driver, self.location_hochiminh_btn):
             click_on_element(self.driver, self.location_hochiminh_btn)
         else:
@@ -453,8 +469,17 @@ class AndroidTikTokProductPage:
                 click_on_element(self.driver, self.first_matching_places_itm)
                 click_on_element(self.driver, self.add_location_close_btn)
         if not check_element_displayed(self.driver, self.everyone_can_see_icon):
-            click_on_element(self.driver, self.everyone_can_see_icon)
+            if check_element_displayed(self.driver, self.friends_can_see_icon):
+                click_on_element(self.driver, self.friends_can_see_icon)
+            elif check_element_displayed(self.driver, self.only_you_can_see_icon):
+                click_on_element(self.driver, self.only_you_can_see_icon)
             click_on_element(self.driver, self.everyone_see_video_rd)
+        click_on_element(self.driver, self.accept_chb)
+        click_on_element(self.driver, self.post_btn)
+        if check_element_displayed(self.driver, self.give_tiktok_access_pop):
+            tap_on_location(self.driver, [(550, 600)])
+        if check_element_displayed(self.driver, self.link_email_pop):
+            tap_on_location(self.driver, [(550, 600)])
 
     def collect_all_data_n_create_shoppable_video(self):
         product_details = self.collect_product_details()

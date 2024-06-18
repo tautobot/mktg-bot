@@ -49,11 +49,10 @@ class AndroidTikTokHomePage:
         wait_seconds(3)
         if app == 'TikTok':
             click_on_element(self.driver, self.tiktok_app)
-        elif app == 'Chrome':
-            click_on_element(self.driver, self.chrome_app)
         wait_seconds(3)
-        if check_element_displayed(self.driver, self.campaign_popup) or check_element_displayed(self.driver, self.ads_pop):
-            tap_on_location(self.driver, [(550, 450)])  # Tap outside popup to close it
+        # if check_element_displayed(self.driver, self.campaign_popup) or check_element_displayed(self.driver, self.ads_pop):
+        #     tap_on_location(self.driver, [(550, 450)])  # Tap outside popup to close it
+        press_android_keycode(self.driver, AndroidKey.BACK, 2)
 
     def login_w_username(self, username, password, logged):
         if check_element_displayed(self.driver, self.for_you_top):

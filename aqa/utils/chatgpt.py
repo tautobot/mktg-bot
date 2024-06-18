@@ -6,7 +6,7 @@ openai.api_key = OPENAI_API_KEY
 
 
 # Function to get response from ChatGPT
-def get_chatgpt_response(prompt='', model="gpt-3.5-turbo", max_tokens=150):
+def get_chatgpt_response(prompt='', model="gpt-3.5-turbo", max_tokens=50):
     try:
         res_ = openai.ChatCompletion.create(
             model=model,

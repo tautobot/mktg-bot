@@ -42,3 +42,24 @@ def input_links():
     links.pop()
 
     return links
+
+"""
+TẠO VIDEO câu chuyện hoạt hình 3D dành cho trẻ em bằng CÔNG CỤ AI miễn phí
+CÁC PHÂN ĐOẠN TRONG VIDEO:
+00:00 - giới thiệu
+1:49  - viết kịch bản với chátGPT
+3:59  - tạo hình ảnh với leonardo.ai
+8:49  - tạo video với Runway ml.com
+13:05 - chuyển văn bản thành giọng nói với Vbee voice studio
+14:23 - edit video với CAPCUT PC
+16:21 - KẾT THÚC
+"""
+
+"""
+Link app trong video hướng dẫn:
+👉 AI Leonardo: https://vantheweb.com/leonardo
+👉 AI RUNWAY: https://vantheweb.com/runwayml/
+👉 TTSMP3: https://ttsmp3.com/
+👉 AI VBEE: https://vbee.vn/?aff=vantheweb/
+👉 CapCut Pro PC 
+"""

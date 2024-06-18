@@ -381,6 +381,17 @@ def move_file(file_path, new_path):
         print("File does not exist at the specified path.")
 
 
+def viet_tts(text, save_to, lang=Languages.VI, voice='female-voice'):
+    response = requests.post("https://ntt123-viettts.hf.space/run/predict", json={
+        "data": [
+            text,
+        ]
+    }).json()
+
+    data = response["data"]
+    file_name = data[0].get('name')
+    print(file_name)
+
 def text_to_speech(text, save_to, lang=Languages.VI, voice='female-voice'):
     if lang == Languages.VI:
         """
@@ -543,5 +554,6 @@ if __name__ == '__main__':
     #     '/Users/trieutruong/github/mktg-bot/resources/vnexpress/vn_thoi_su/2024-06-12-0001/video'
     # )
 
-    download_convert_youtube_to_mp3()
+    content = 'Khi Bellingham rời sân ở phút 86, nhường vị trí cho Kobbie Mainoo, khán giả tuyển Anh đồng loạt đứng dậy vỗ tay tán thưởng tiền vệ số 10. Không chỉ ghi bàn duy nhất, anh còn chơi xông xáo, liên tiếp bị phạm lỗi và cũng khiêu khích đối thủ. Tài năng của tiền vệ CLB Real Madrid là điểm khác biệt của trận cầu khan hiếm cơ hội, khi mỗi đội chỉ dứt điểm năm lần.'
+    viet_tts(text=content, save_to=CODE_HOME)
     pass

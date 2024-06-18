@@ -145,8 +145,10 @@ def drag_drop_from_loc1_to_loc2(driver, loc1, loc2, pause=2):
     ActionHelpers.drag_and_drop(driver, el1, el2, pause=pause)
 
 
-def press_android_keycode(driver, keycode):
-    driver.press_keycode(keycode)
+def press_android_keycode(driver, keycode, time=1):
+    for t in range(0, time):
+        driver.press_keycode(keycode)
+        wait_seconds(1)
 
 
 def wait_xpath(driver, xpath, time=IMPLICIT_WAIT_TIMEOUT):
