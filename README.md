@@ -173,4 +173,4 @@ Till the end of time, my love, goodbye
 Experimental Ambient, Nature Sounds, Synthwave, sleep music, Field Recordings
 
 # Common Lo-fi 
-chill, lo-fi downtempo beat for deep focus and flow
+chill, piano, lo-fi downtempo beat for deep focus and flow
