@@ -116,8 +116,11 @@ class AndroidTikTokShopPage:
             products.append(p_title)  # Store product title in created videos to skip next time
             click_on_element(self.driver, product1)
             wait_seconds(2)
-            # TODO: Create a page to add the product into owner shop
-            # self.product_page.collect_all_data_n_create_shoppable_video()
+            # Start creating shoppable video
+            posted = self.product_page.collect_all_data_n_create_shoppable_video()
+            if posted:
+                # TODO: Store posted product into report
+                pass
             # Finish creating a shoppable video, get back to products list
             press_android_keycode(self.driver, AndroidKey.BACK, 2)
         print(products)

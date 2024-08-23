@@ -11,6 +11,7 @@ pyenv install <python version>
 pyenv install 3.9.11
 pyenv global 3.9.11
 pyenv local 3.9.11
+echo "3.9.11" > .python-version
 pyenv virtualenv 3.9.11 .venv
 ```
 3. Activate and deactivate .venv
@@ -20,7 +21,7 @@ python -m venv .venv
 ```
 4. Install pipenv
 ```
-pip install pipenv
+pip install pipenv  
 pipenv activate
 pipenv deactivate
 
@@ -140,3 +141,36 @@ pipenv install
         Restart container if not see emulator and re-check again: docker restart android-container
     f. Run testcase (Make sure you are at /opt/gigacover/assurance)
         ./cron/daily_cronjob_aqa/aqa_daily.sh
+
+# AI Music with Suno
+piano, lo-fi chill, ambient instrumental, sounds of rain, sounds of people's voices
+LoFi ambient layers, ambient synths, field recordings, effected vocals
+ballade, piano, female, field recordings, emo, emotional, bass, gospel
+
+[Female, airy vocals]
+Verse 1:
+Dưới chiếc ô, hai chúng ta rúc vào nhau
+Tiếng mưa lặng lẽ đọng lại trong tai tôi
+Lời chia tay nhức nhối trong tim
+Nụ cười cuối cùng nhòe đi vì nước mắt
+
+Chorus:
+Mùa mưa anh trải qua cùng em
+Ngày mùa mưa bắt đầu, tôi nói lời chia tay
+Ở góc phố đầy kỷ niệm
+「Goodbye」Nói lời tạm biệt mãi mãi
+
+Ending:
+Một mình bước dưới mưa lặng lẽ
+Dù những ngày mùa mưa vẫn tiếp tục
+Anh sẽ luôn có em trong tim
+Tôi sẽ không quên, một lời chia tay vĩnh viễn
+
+Ending English Phrase:
+Even in the rain, I'll remember you
+Till the end of time, my love, goodbye
+
+Experimental Ambient, Nature Sounds, Synthwave, sleep music, Field Recordings
+
+# Common Lo-fi 
+chill, lo-fi downtempo beat for deep focus and flow

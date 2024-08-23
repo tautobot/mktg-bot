@@ -21,10 +21,10 @@ class Test(unittest.TestCase):
     def test_login_tiktok(self):
         self.home_page.open_app()
         # self.home_page.login_w_username(TIKTOK_ACC, TIKTOK_PASS, TIKTOK_LOGGED)
-        self.shop_page.go_through_products_from_flash_sale(10)
-        # p = self.product_page.collect_product_details()
-        # e = self.product_page.collect_earn_details()
-        # self.product_page.create_shoppable_video('p')
+        # self.shop_page.go_through_products_from_flash_sale(10)
+        p = self.product_page.collect_product_details()
+        e = self.product_page.collect_earn_details()
+        self.product_page.create_shoppable_video(p)
 
         # self.shop_page.demo()
 

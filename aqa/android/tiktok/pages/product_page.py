@@ -2,6 +2,7 @@ import re
 import random
 import tracemalloc
 from threading import Thread
+from aqa.utils import gemini
 from appium.webdriver.common.appiumby import AppiumBy
 from appium.webdriver.extensions.android.nativekey import AndroidKey
 from aqa.utils.zapier import ai_response, run_ai_shorten_desc
@@ -26,6 +27,7 @@ from aqa.utils.webdriver_util import (
     drag_drop_from_el1_to_el2,
     press_android_keycode
 )
+
 
 class ProductInfo:
     def __init__(self):
@@ -227,6 +229,7 @@ class AndroidTikTokProductPage:
     @staticmethod
     def shorten_product_title(product_title, max_length=100):
         product_title = product_title.strip()
+
         # Remove words after the last period "."
         if '.' in product_title:
             product_title = product_title.rsplit('.', 1)[0]
@@ -355,7 +358,12 @@ class AndroidTikTokProductPage:
         swipe_down_by_pages(self.driver)  # Swipe to previous page to see the expand/collapse
         click_on_element(self.driver, self.promo_info_expand)
         e = EarnInfo()
-        e._earn_amt, e._comm_rate, e._in_stock = self.get_promo_details(get_element_text(self.driver, self.promo_details))
+        if check_element_displayed(self.driver, self.earn_per_sale_lbl):
+            e._earn_amt = str(get_element_text(self.driver, self.earn_per_sale_lbl)).replace('Earn', '').replace('đ per sale', '').replace(',', '').replace('.', '').strip()
+        if check_element_displayed(self.driver, self.commission_rate_lbl):
+            e._comm_rate = str(get_element_text(self.driver, self.commission_rate_lbl)).replace('% commission rate', '').strip()
+        if check_element_displayed(self.driver, self.in_stock_lbl):
+            e._comm_rate = str(get_element_text(self.driver, self.in_stock_lbl)).strip()
         print(e)
         return e
 
@@ -368,41 +376,61 @@ class AndroidTikTokProductPage:
         if check_element_displayed(self.driver, self.try_now_btn):
             click_on_element(self.driver, self.try_now_btn)  # In case Try Now button appeared
 
-        # Start ai shorten product title in thread
-        tracemalloc.start()
-        thread1 = Thread(target=run_ai_shorten_desc(product_details._p_short_desc, 100))
-        thread2 = Thread(target=wait_seconds(1))
-        thread1.start()
-        thread2.start()
-        while thread1.is_alive():
-            wait_seconds(1)
-            print('waiting for ai generating shorten product title')
-        tracemalloc.stop()
+        # # Selenium - Start ai shorten product title in thread
+        # tracemalloc.start()
+        # thread1 = Thread(target=run_ai_shorten_desc(product_details._p_short_desc, 100))
+        # thread2 = Thread(target=wait_seconds(1))
+        # thread1.start()
+        # thread2.start()
+        # while thread1.is_alive():
+        #     wait_seconds(1)
+        #     print('waiting for ai generating shorten product title')
+        # tracemalloc.stop()
+        # p_short_desc = ai_response.split('||')[0] if ai_response else self.shorten_product_title(product_details._p_short_desc, max_length=100)
+
+        # Gemini API
+        p_short_desc = gemini.gemini_shorten_content(product_details._p_short_desc, 90)
+
         send_text_into_element(
             self.driver,
             self.product_desc_txt,
-            ai_response or self.shorten_product_title(product_details._p_short_desc)
+            p_short_desc
         )
         swipe_up(self.driver)
-        if not check_element_displayed(self.driver, self.see_more_expand, duration=1):
+        if check_element_displayed(self.driver, self.see_more_expand, duration=1):
             click_on_element_location(self.driver, self.see_more_expand)
 
         # TODO: Write a new utility to check if the product is free shipping, COD, etc. from product details page
         # Only 5 selling options are selectable
         count = 0
-        if not check_element_displayed(self.driver, self.selling_points_w_eco_friendly_checked, duration=1):
+        if (
+            not check_element_displayed(self.driver, self.selling_points_w_eco_friendly_checked, duration=1) and
+                check_element_displayed(self.driver, self.selling_points_w_eco_friendly_ckb)
+        ):
             click_on_element(self.driver, self.selling_points_w_eco_friendly_ckb)
             count += 1
-        if not check_element_displayed(self.driver, self.selling_points_free_shipping_checked, duration=1):
+        if (
+            not check_element_displayed(self.driver, self.selling_points_free_shipping_checked, duration=1) and
+                check_element_displayed(self.driver, self.selling_points_free_shipping_ckb)
+        ):
             click_on_element(self.driver, self.selling_points_free_shipping_ckb)
             count += 1
-        if not check_element_displayed(self.driver, self.selling_points_cod_checked, duration=1):
+        if (
+            not check_element_displayed(self.driver, self.selling_points_cod_checked, duration=1) and
+                check_element_displayed(self.driver, self.selling_points_cod_ckb)
+        ):
             click_on_element(self.driver, self.selling_points_cod_ckb)
             count += 1
-        if not check_element_displayed(self.driver, self.selling_points_price_discount_checked, duration=1):
+        if (
+            not check_element_displayed(self.driver, self.selling_points_price_discount_checked, duration=1) and
+                check_element_displayed(self.driver, self.selling_points_price_discount_ckb)
+        ):
             click_on_element(self.driver, self.selling_points_price_discount_ckb)
             count += 1
-        if not check_element_displayed(self.driver, self.selling_points_best_seller_checked, duration=1):
+        if (
+            not check_element_displayed(self.driver, self.selling_points_best_seller_checked, duration=1) and
+                check_element_displayed(self.driver, self.selling_points_best_seller_ckb)
+        ):
             click_on_element(self.driver, self.selling_points_best_seller_ckb)
             count += 1
 
@@ -456,8 +484,12 @@ class AndroidTikTokProductPage:
             wait_seconds(1)
         click_on_element(self.driver, self.post_on_tiktok_next_btn)
 
-        # Type # to include hashtags in Product Description
-        send_text_into_element(self.driver, self.add_desc_txt, "Giấy ăn rút lụa 4 lớp thùng 20 gói")
+        # # Type # to include hashtags in Product Description
+        # p_short_title = ai_response.split('||')[1] if ai_response else self.shorten_product_title(
+        #     product_details._p_short_desc, max_length=30)
+        p_short_title = p_short_desc if len(p_short_desc) <= 30 else gemini.gemini_shorten_content(p_short_desc, 30)
+
+        send_text_into_element(self.driver, self.add_desc_txt, p_short_title)
         if check_element_displayed(self.driver, self.location_hochiminh_btn):
             click_on_element(self.driver, self.location_hochiminh_btn)
         else:
@@ -484,4 +516,7 @@ class AndroidTikTokProductPage:
     def collect_all_data_n_create_shoppable_video(self):
         product_details = self.collect_product_details()
         earn_details    = self.collect_earn_details()
-        self.create_shoppable_video(product_details)
+        if earn_details._earn_amt:
+            self.create_shoppable_video(product_details)
+            return True
+        return False
