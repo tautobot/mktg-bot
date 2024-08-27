@@ -271,5 +271,11 @@ class VNExENCategories(BaseEnum):
         return category_logo_mapping[category]
 
 
+class VideoEffectType(BaseEnum):
+    FIREFLIES = 'fireflies'
+    SNOWFALL  = 'snowfall'
+    RAINDROPS = 'raindrops'
+
+
 if __name__ == '__main__':
     pass
