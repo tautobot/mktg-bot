@@ -650,17 +650,17 @@ def download_convert_youtube_to_mp3():
         if choice == "2":
             link = input("Enter the link to the playlist: ")
             print("Downloading playlist...")
-            youtube_downloader.download_playlist(link, quality)
+            youtube.download_playlist(link, quality)
             print("Download finished!")
         if choice == "1":
-            links = youtube_downloader.input_links()
+            links = youtube.input_links()
             for link in links:
-                youtube_downloader.download_video(link, quality)
+                youtube.download_video(link, quality)
     elif choice == "3":
-        links = youtube_downloader.input_links()
+        links = youtube.input_links()
         for link in links:
             print("Downloading...")
-            filename = youtube_downloader.download_video(link, 'low')
+            filename = youtube.download_video(link, 'low')
             print("Converting...")
             convert_to_mp3(filename)
     else:
@@ -850,51 +850,13 @@ def deepgram_speech_to_text_online_file():
 
     asyncio.run(main())
 
-def deepgram_speech_to_text_local_file():
-    # pipenv install deepgram-sdk
-    from deepgram import Deepgram
-    from config import DEEPGRAM_API_KEY
-    import asyncio, json
 
-    PATH_TO_FILE = 'louder_output.wav'
-
-    async def main():
-        # Initializes the Deepgram SDK
-        deepgram = Deepgram(DEEPGRAM_API_KEY)
-        # Open the audio file
-        with open(PATH_TO_FILE, 'rb') as audio:
-            # ...or replace mimetype as appropriate
-            source = {'buffer': audio, 'mimetype': 'audio/wav'}
-            response = await deepgram.transcription.prerecorded(source, {'punctuate': True})
-            json_obj = json.dumps(response, indent=4)
-            print(json_obj)
-            with open("transcribed.txt", "w") as f:
-                f.write(json_obj)
-
-    asyncio.run(main())
-
-
-def get_list_songs(res):
-    result_key = None
-    for key in res:
-        if 'result' in output[key]:
-            result_key = key
-            break
-    # Accessing the "result" data using the found key
-    if result_key:
-        result_data = res.get(result_key).get("result") or []
-        # Printing the "result" data
-        return result_data
-    else:
-        print("No 'result' data found in the output.")
-
-
-def extend_audio():
+def extend_audio(input_audio_file, output_audio_file, extend):
     from pymusiclooper.handler import MusicLooper
 
     # Specify the input audio file and output file
-    input_audio_file = f"{CODE_HOME}/input_audio.mp3"
-    output_audio_file = f"{CODE_HOME}/output_audio_extended.mp3"
+    # input_audio_file = f"{CODE_HOME}/input_audio.mp3"
+    # output_audio_file = f"{CODE_HOME}/output_audio_extended.mp3"
 
     # Create a MusicLooper instance
     music_looper = MusicLooper(input_audio_file)
@@ -909,9 +871,9 @@ def extend_audio():
     music_looper.extend(
         loop_start=loop_start,
         loop_end=loop_end,
-        extended_length=360,
+        extended_length=extend,
         format="mp3",
-        output_dir='/Users/trieutruong/github/mktg-bot/LooperOutput')
+        output_dir=output_audio_file)
 
     print("Audio file extended successfully to 6 minutes.")
 

@@ -118,6 +118,26 @@ pipenv install
     ex. container_atlas="gc_atlas_tt" and container_postgres="gc_postgres_tt"
 ```
 
+# Additional Installations
+1. ffmpeg - ref https://hub.docker.com/r/linuxserver/ffmpeg
+If you have Docker installed you can run a Docker container that comes with ffmpeg preinstalled.
+
+There are various ffmpeg Docker images out there, for instance linuxserver/ffmpeg (see other answer below).
+
+To run this image to convert an input.mkv file into an output file, open a Terminal and run:
+`
+docker run --rm -it \
+  -v $(pwd):/config \
+  linuxserver/ffmpeg \
+  -i /config/input.mkv \
+  -c:v libx264 \
+  -b:v 4M \
+  -vf scale=1280:720 \
+  -c:a copy \
+  /config/output.mkv
+`
+Note that $(pwd) will be your current working directory, and the command expects that directory to contain the referenced input file input.mkv. The file will be mounted into the container (into the /config directory).
+
 # Execute the TestCase
 
 1. Run with release env 
