@@ -57,6 +57,7 @@ ffmpeg-python = "*"
 pymusiclooper = "*"
 opencv-python = "*"
 requests = "*"
+asyncio = "*"
 
 [requires]
 python_version = "3.9"

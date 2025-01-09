@@ -89,6 +89,17 @@ class FirefliesSimulation:
             frame = cv2.addWeighted(frame, 1, blurred_overlay, 0.5, 0)  # Blend the blurred overlay with the frame
         return frame
 
+    def draw_on_screen(self):
+        screen = np.zeros((self.screen_height, self.screen_width, 3), dtype=np.uint8)  # Create a black screen
+        overlay = np.zeros_like(screen)
+        for firefly in self.fireflies:
+            cv2.circle(overlay, (int(firefly.pos[0]), int(firefly.pos[1])), firefly.size + firefly.glow_radius,
+                       firefly.color, -1)
+            blurred_overlay = cv2.GaussianBlur(overlay, (15, 15), 0)  # Apply Gaussian blur to the overlay
+            screen = cv2.addWeighted(screen, 1, blurred_overlay, 0.5, 0)  # Blend the blurred overlay with the frame
+
+        cv2.imshow('Snowfall Simulation', screen)
+
 
 class Snowflake:
     def __init__(self, screen_width, screen_height):
@@ -133,13 +144,21 @@ class SnowfallSimulation:
             frame = cv2.addWeighted(frame, 1, blurred_overlay, 0.5, 0)  # Blend the blurred overlay with the frame
         return frame
 
+    def draw_on_screen(self):
+        screen = np.zeros((self.screen_height, self.screen_width, 3), dtype=np.uint8)  # Create a black screen
+        for snowflake in self.snowflakes:
+            cv2.circle(screen, (snowflake.x, snowflake.y), snowflake.size, snowflake.color, -1)  # Draw snowflake
+            # cv2.line(screen, (snowflake.x, snowflake.y), (snowflake.x, snowflake.y + snowflake.length), snowflake.color, 1)  # Draw raindrop
+
+        cv2.imshow('Snowfall Simulation', screen)
+
 
 class Raindrop:
     def __init__(self, screen_width, screen_height):
         self.x = random.randint(0, screen_width)  # Random x position within screen width
         self.y = random.randint(0, screen_height)  # Random y position within screen height
-        self.length = random.randint(3, 12)  # Random length of the raindrop
-        self.speed = random.randint(10, 25)  # Random falling speed of the raindrop
+        self.length = random.randint(3, 20)  # Random length of the raindrop
+        self.speed = random.randint(10, 30)  # Random falling speed of the raindrop
         self.color = (255, 255, 255)  # White color for the raindrop
         self.transition_speed = random.uniform(0.001, 0.005)
         self.transition_offset = random.uniform(0, 10 * math.pi)
@@ -175,6 +194,15 @@ class RainSimulation:
             cv2.line(frame, (raindrop.x, raindrop.y), (raindrop.x, raindrop.y + raindrop.length), raindrop.color, 1)  # Draw raindrop
         return frame
 
+    def draw_on_screen(self):
+        screen = np.zeros((self.screen_height, self.screen_width, 3), dtype=np.uint8)  # Create a black screen
+        overlay = np.zeros_like(screen)
+        for raindrop in self.raindrops:
+            cv2.line(screen, (raindrop.x, raindrop.y), (raindrop.x, raindrop.y + raindrop.length), raindrop.color, 1)  # Draw raindrop
+            blurred_overlay = cv2.GaussianBlur(overlay, (15, 15), 0)  # Apply Gaussian blur to the overlay
+            screen = cv2.addWeighted(screen, 1, blurred_overlay, 0.5, 0)  # Blend the blurred overlay with the frame
+
+        cv2.imshow('Snowfall Simulation', screen)
 
 def add_effect_into_video(effect, input_video_path='input_video.mp4', output_video_path='output_video.mp4'):
     # Load input video with audio
@@ -350,8 +378,33 @@ def create_video_from_short_video(input_video_path, output_video_path):
     print("New 3-hour video has been created successfully!")
 
 
+def demo_effect(effect=VideoEffectType.FIREFLIES):
+    # Example Usage
+    width = 400
+    height = 300
+
+    effects = []
+    if effect == VideoEffectType.FIREFLIES:
+        effects = FirefliesSimulation(width, height, 15)  # Create fireflies effect simulation with 7 fireflies
+    elif effect == VideoEffectType.SNOWFALL:
+        effects = SnowfallSimulation(width, height, 15)  # Create fireflies effect simulation with 15 snowflakes
+    elif effect == VideoEffectType.RAINDROPS:
+        effects = RainSimulation(width, height, 40)  # Create raindrops effect simulation with 20 raindrops
+
+    running = True
+    while running:
+        effects.update()
+        effects.draw_on_screen()
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    cv2.destroyAllWindows()
+
+
 if __name__ == '__main__':
     # pass
+    demo_effect(VideoEffectType.RAINDROPS)
 
     # input_image_path = f'{CODE_HOME}/input/image2.jpeg'
     # input_audio_path = f'{CODE_HOME}/input/lofi_no30_60m00s.mp3'
@@ -360,16 +413,16 @@ if __name__ == '__main__':
     # output_video_file_name = f'{CODE_HOME}/output/{input_audio_file_name}_{time.time()}.mp4'
     # create_video_f_image_n_audio(input_image_path, input_audio_path, output_video_file_name)
 
-    input_video_file_name = f'{CODE_HOME}/input/lofi.no30.1724843550.2877781.mp4'
-    file_name_with_extension = os.path.basename(input_video_file_name)
-    file_name, file_extension = os.path.splitext(file_name_with_extension)
-    output_video_file_name = f'{CODE_HOME}/output/{file_name}_{time.time()}.mp4'
-    effect = VideoEffectType.FIREFLIES
-    add_effect_into_video(
-        effect,
-        input_video_file_name,
-        output_video_file_name
-    )
+    # input_video_file_name = f'{CODE_HOME}/input/lofi.no30.1724843550.2877781.mp4'
+    # file_name_with_extension = os.path.basename(input_video_file_name)
+    # file_name, file_extension = os.path.splitext(file_name_with_extension)
+    # output_video_file_name = f'{CODE_HOME}/output/{file_name}_{time.time()}.mp4'
+    # effect = VideoEffectType.FIREFLIES
+    # add_effect_into_video(
+    #     effect,
+    #     input_video_file_name,
+    #     output_video_file_name
+    # )
 
     # create_gif_w_effect(
     #     f'{CODE_HOME}/input/image2.jpeg',
